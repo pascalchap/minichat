@@ -68,29 +68,29 @@ Data Types
 Function Index
 --------------
 
-| Function/Arity                       | Description                                                                                                      |
-|--------------------------------------|------------------------------------------------------------------------------------------------------------------|
-| [start\_server/0](#start_server0)    | Start the "name server".                                                                                         |
-| [register\_me/2](#register_me2)      | Register a user and its listen loop pid.                                                                         |
-| [where\_is/1](#where_is1)            | Find the user listen loop pid of a given user name.                                                              |
-| [get\_state/0](#get_state0)          | Get the user record list from the server.                                                                        |
-| [stop\_server/0](#stop_server0)      | Stop the server.                                                                                                 |
-| [server\_init/0](#server_init0)      | Server initialization.                                                                                           |
-| [server\_loop/1\*](#server_loop1-)   | _Private_ Server loop.                                                                                           |
-| [do\_register/4\*](#do_register4-)   | _Private_ Function to register a new user.                                                                       |
-| [unregister/2\*](#unregister2-)      | _Private_ Function to un-register a user whose process died.                                                     |
-| [search/3\*](#search3-)              | _Private_ Get the user listen loop pid given his name.                                                           |
-| [start\_user/1](#start_user1)        | Start the user process with a default server node.                                                               |
-| [start\_user/2](#start_user2)        | Start the user process with given server node.                                                                   |
-| [user\_init/1](#user_init1)          | Initialize the user processes.                                                                                   |
-| [listen\_loop/0](#listen_loop0)      | Listen loop.                                                                                                     |
-| [send\_loop/3\*](#send_loop3-)       | _Private_ Send loop.                                                                                             |
-| [send\_message/3\*](#send_message3-) | _Private_ First step of the send message operation responsible to extract the Recipent name from the user input. |
-| [send\_message/4\*](#send_message4-) | _Private_ Second step of the send message operation responsible to retreive the Recipient listen loop.           |
-| [do\_send/4\*](#do_send4-)           | _Private_ Last step of the send message operation responsible to send the message.                               |
-| [split/1\*](#split1-)                | _Private_ Extract the Recipient name from a string.                                                              |
-| [show\_people/1\*](#show_people1-)   | _Private_ Request the list of the registered users.                                                              |
-| [gendoc/0](#gendoc0)                 | Generate the documentation.                                                                                      |
+| Function/Arity                       | Description                                                                                                       |
+|--------------------------------------|-------------------------------------------------------------------------------------------------------------------|
+| [start\_server/0](#start_server0)    | Start the "name server".                                                                                          |
+| [register\_me/2](#register_me2)      | Register a user and its listen loop pid.                                                                          |
+| [where\_is/1](#where_is1)            | Find the user listen loop pid of a given user name.                                                               |
+| [get\_state/0](#get_state0)          | Get the user record list from the server.                                                                         |
+| [stop\_server/0](#stop_server0)      | Stop the server.                                                                                                  |
+| [server\_init/0](#server_init0)      | Server initialization.                                                                                            |
+| [server\_loop/1\*](#server_loop1-)   | _Private_ : Server loop.                                                                                          |
+| [do\_register/4\*](#do_register4-)   | _Private_ : Function to register a new user.                                                                      |
+| [unregister/2\*](#unregister2-)      | _Private_ : Function to un-register a user whose process died.                                                    |
+| [search/3\*](#search3-)              | _Private_ : Get the user listen loop pid given his name.                                                          |
+| [start\_user/1](#start_user1)        | Start the user process with a default server node.                                                                |
+| [start\_user/2](#start_user2)        | Start the user process with given server node.                                                                    |
+| [user\_init/1](#user_init1)          | Initialize the user processes.                                                                                    |
+| [listen\_loop/0](#listen_loop0)      | Listen loop.                                                                                                      |
+| [send\_loop/3\*](#send_loop3-)       | _Private_ : Send loop.                                                                                            |
+| [send\_message/3\*](#send_message3-) | _Private_ : First step of the send message operation responsible to extract the Recipent name from the user input.|
+| [send\_message/4\*](#send_message4-) | _Private_ : Second step of the send message operation responsible to retreive the Recipient listen loop.          |
+| [do\_send/4\*](#do_send4-)           | _Private_ : Last step of the send message operation responsible to send the message.                              |
+| [split/1\*](#split1-)                | _Private_ : Extract the Recipient name from a string.                                                             |
+| [show\_people/1\*](#show_people1-)   | _Private_ : Request the list of the registered users.                                                             |
+| [gendoc/0](#gendoc0)                 | Generate the documentation.                                                                                       |
 
 Function Details
 ----------------
@@ -139,13 +139,13 @@ Then it calls the server\_loop with an empty list of users as initial state.
 
 `server_loop(Users::[user()]) -> ok`
 
-*Private* Server loop. This function is in charge to manage the incomming messages to the server. It maintains a list of user records who are connected to the chat system. It add the new users, monitor their processes and remove them from the list when the user process dies. It ignores any unexpected (badly formatted) message.
+_Private_ : Server loop. This function is in charge to manage the incomming messages to the server. It maintains a list of user records who are connected to the chat system. It add the new users, monitor their processes and remove them from the list when the user process dies. It ignores any unexpected (badly formatted) message.
 
 ### do\_register/4 \*
 
 `do_register(Users::[user()], Name::string(), Pid::pid(), From::pid()) -> ok | {error, already_exist}`
 
-*Private* Function to register a new user. Check if the Name of the registering user is not already in use,
+_Private_ : Function to register a new user. Check if the Name of the registering user is not already in use,
 
 if not, start to monitor the user process (send loop) and add the user record to the existing list and send back the message ok.
 
@@ -157,13 +157,13 @@ Note that the pid used for the communication is the is the user send loop, the o
 
 `unregister(MonitorRef::reference(), Users::[user()]) -> [user()]`
 
-*Private* Function to un-register a user whose process died.
+_Private_ : Function to un-register a user whose process died.
 
 ### search/3 \*
 
 `search(Users::[user()], Name::string(), From::pid()) -> {ok, pid()} | {error, not_registered}`
 
-*Private* Get the user listen loop pid given his name.
+_Private_ : Get the user listen loop pid given his name.
 
 ### start\_user/1
 
@@ -193,11 +193,9 @@ if it fails, stop the listen loop and return an error message.
 
 Listen loop. A simple receive bloc listening any message.
 
-If it is a well formed message from another user, it prints to the shell the date an time, the emitter name and then the message text. Then it aknowledges the message
-
-If it is the stop message, it ends the loop.
-
-It ignores all other messages, simply removing them from the mailbox.
+- If it is a well formed message from another user, it prints to the shell the date an time, the emitter name and then the message text. Then it aknowledges the message
+- If it is the stop message, it ends the loop.
+- It ignores all other messages, simply removing them from the mailbox.
 
 The listening activity run in a separate process, so it is always available to display incoming messages, independently of the writting activity of the user. Nevertheless both processes share the shell panel to display their results, The basic test I made worked correctly, even if an incomming message is displayed while the user is writting.
 
@@ -205,21 +203,17 @@ The listening activity run in a separate process, so it is always available to d
 
 `send_loop(Name::string(), Me::pid(), Connected::connected_user_list()) -> ok`
 
-*Private* Send loop. The main user process is in charge to get the input from the user , analyze it and make an action accordingly. 3 messages are supported, the other ones are ignored:
+_Private_ : Send loop. The main user process is in charge to get the input from the user , analyze it and make an action accordingly. 3 messages are supported, the other ones are ignored:
 
-"bye" : leave the chat
-
-"who" : get a list of the reachable users
-
-"Recipient : Text" : to send the message "Text" to the user "Recipient" Recipient is any string that do not contain a : character. So a user who have chosen the name "Smart:Joe" is not reachable while "Smart Joe" is correct.
+- "bye" : leave the chat
+- "who" : get a list of the reachable users
+- "Recipient : Text" : to send the message "Text" to the user "Recipient" Recipient is any string that do not contain a : character. So a user who have chosen the name "Smart:Joe" is not reachable while "Smart Joe" is correct.
 
 The sending loop stores 3 information:
 
-Name : The user name is used to tag the messages so the recipent will know who wrote each of the received messages.
-
-Me : the pid of the listen loop, in order to stop it whe the user leaves the chat. As far as the listen loop is linked to the send loop, it was also possible to exit the prcess using a reason different than normal, but I don't like to use error mechanism for a normal behavior.
-
-Connected : a list of pair {Name,Pid} to avoid permanent accesses to the server to solve the Recipient address. A consequence is that if one user is disconnected for a while, the first message won't be delivered (The system don't propagate the user disparition).
+- Name : The user name is used to tag the messages so the recipent will know who wrote each of the received messages.
+- Me : the pid of the listen loop, in order to stop it whe the user leaves the chat. As far as the listen loop is linked to the send loop, it was also possible to exit the process using a reason different than normal, but I don't like to use error mechanism for a normal behavior.
+- Connected : a list of pair {Name,Pid} to avoid permanent accesses to the server to solve the Recipient address. A consequence is that if one user is disconnected for a while, the first message won't be delivered (The system don't propagate the user disparition).
 
 Sending the message needs some steps, the execution is delegate to the helper function send message who is in charge to send the message if possible and update the pair list of [user,pid].
 
@@ -227,31 +221,31 @@ Sending the message needs some steps, the execution is delegate to the helper fu
 
 `send_message(Message::string(), Sender::string(), Connected::connected_user_list()) -> connected_user_list()`
 
-*Private* First step of the send message operation responsible to extract the Recipent name from the user input.
+_Private_ : First step of the send message operation responsible to extract the Recipent name from the user input.
 
 ### send\_message/4 \*
 
 `send_message(Recipient::string(), Text::string(), Sender::string(), Connected::connected_user_list()) -> connected_user_list()`
 
-*Private* Second step of the send message operation responsible to retreive the Recipient listen loop. If the Recipent is not connected yet to this user, it requests its pid to the server and adds it to the connected list
+_Private_ : Second step of the send message operation responsible to retreive the Recipient listen loop. If the Recipent is not connected yet to this user, it requests its pid to the server and adds it to the connected list
 
 ### do\_send/4 \*
 
 `do_send(To::pid(), Text::string(), Sender::string(), Connected::connected_user_list()) -> connected_user_list()`
 
-*Private* Last step of the send message operation responsible to send the message. If the message is not acknowledged within 2 seconds, it removes the recipein from the connected user list.
+_Private_ : Last step of the send message operation responsible to send the message. If the message is not acknowledged within 2 seconds, it removes the recipein from the connected user list.
 
 ### split/1 \*
 
 `split(Message::string()) -> {string(), string()} | {error, string()}`
 
-*Private* Extract the Recipient name from a string. It first splits the string into pieces using the charater : as separator. Then it constructs a tuple made of the first token (without leading and trailing blanks) and the rest of the input string (if there were multiple : charaters, the message is rebuilt).
+_Private_ : Extract the Recipient name from a string. It first splits the string into pieces using the charater : as separator. Then it constructs a tuple made of the first token (without leading and trailing blanks) and the rest of the input string (if there were multiple : charaters, the message is rebuilt).
 
 ### show\_people/1 \*
 
 `show_people(Connected::connected_user_list()) -> ok`
 
-*Private* Request the list of the registered users. When the list is received, the function extract all the names and check if they are in the connected list and print the information accordingly.
+_Private_ : Request the list of the registered users. When the list is received, the function extract all the names and check if they are in the connected list and print the information accordingly.
 
 ### gendoc/0
 
