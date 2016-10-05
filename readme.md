@@ -1,5 +1,5 @@
-|-----------------------------------|------------------------------------------------------|
 | [Overview](overview-summary.html) | [![erlang logo](erlang.png)](http://www.erlang.org/) |
+|-----------------------------------|------------------------------------------------------|
 
 Welcome to Single File MiniChat
 ===============================
@@ -68,28 +68,29 @@ Data Types
 Function Index
 --------------
 
+| Function/Arity                       | Description                                                                                                      |
 |--------------------------------------|------------------------------------------------------------------------------------------------------------------|
-| [start\_server/0](#start_server-0)   | Start the "name server".                                                                                         |
-| [register\_me/2](#register_me-2)     | Register a user and its listen loop pid.                                                                         |
-| [where\_is/1](#where_is-1)           | Find the user listen loop pid of a given user name.                                                              |
-| [get\_state/0](#get_state-0)         | Get the user record list from the server.                                                                        |
-| [stop\_server/0](#stop_server-0)     | Stop the server.                                                                                                 |
-| [server\_init/0](#server_init-0)     | Server initialization.                                                                                           |
-| [server\_loop/1\*](#server_loop-1)   | *Private* Server loop.                                                                                           |
-| [do\_register/4\*](#do_register-4)   | *Private* Function to register a new user.                                                                       |
-| [unregister/2\*](#unregister-2)      | *Private* Function to un-register a user whose process died.                                                     |
-| [search/3\*](#search-3)              | *Private* Get the user listen loop pid given his name.                                                           |
-| [start\_user/1](#start_user-1)       | Start the user process with a default server node.                                                               |
-| [start\_user/2](#start_user-2)       | Start the user process with given server node.                                                                   |
-| [user\_init/1](#user_init-1)         | Initialize the user processes.                                                                                   |
-| [listen\_loop/0](#listen_loop-0)     | Listen loop.                                                                                                     |
-| [send\_loop/3\*](#send_loop-3)       | *Private* Send loop.                                                                                             |
-| [send\_message/3\*](#send_message-3) | *Private* First step of the send message operation responsible to extract the Recipent name from the user input. |
-| [send\_message/4\*](#send_message-4) | *Private* Second step of the send message operation responsible to retreive the Recipient listen loop.           |
-| [do\_send/4\*](#do_send-4)           | *Private* Last step of the send message operation responsible to send the message.                               |
-| [split/1\*](#split-1)                | *Private* Extract the Recipient name from a string.                                                              |
-| [show\_people/1\*](#show_people-1)   | *Private* Request the list of the registered users.                                                              |
-| [gendoc/0](#gendoc-0)                | Generate the documentation.                                                                                      |
+| [start\_server/0](#start_server0)    | Start the "name server".                                                                                         |
+| [register\_me/2](#register_me2)      | Register a user and its listen loop pid.                                                                         |
+| [where\_is/1](#where_is1)            | Find the user listen loop pid of a given user name.                                                              |
+| [get\_state/0](#get_state0)          | Get the user record list from the server.                                                                        |
+| [stop\_server/0](#stop_server0)      | Stop the server.                                                                                                 |
+| [server\_init/0](#server_init0)      | Server initialization.                                                                                           |
+| [server\_loop/1\*](#server_loop1-)   | _Private_ Server loop.                                                                                           |
+| [do\_register/4\*](#do_register4-)   | _Private_ Function to register a new user.                                                                       |
+| [unregister/2\*](#unregister2-)      | _Private_ Function to un-register a user whose process died.                                                     |
+| [search/3\*](#search3-)              | _Private_ Get the user listen loop pid given his name.                                                           |
+| [start\_user/1](#start_user1)        | Start the user process with a default server node.                                                               |
+| [start\_user/2](#start_user2)        | Start the user process with given server node.                                                                   |
+| [user\_init/1](#user_init1)          | Initialize the user processes.                                                                                   |
+| [listen\_loop/0](#listen_loop0)      | Listen loop.                                                                                                     |
+| [send\_loop/3\*](#send_loop3-)       | _Private_ Send loop.                                                                                             |
+| [send\_message/3\*](#send_message3-) | _Private_ First step of the send message operation responsible to extract the Recipent name from the user input. |
+| [send\_message/4\*](#send_message4-) | _Private_ Second step of the send message operation responsible to retreive the Recipient listen loop.           |
+| [do\_send/4\*](#do_send4-)           | _Private_ Last step of the send message operation responsible to send the message.                               |
+| [split/1\*](#split1-)                | _Private_ Extract the Recipient name from a string.                                                              |
+| [show\_people/1\*](#show_people1-)   | _Private_ Request the list of the registered users.                                                              |
+| [gendoc/0](#gendoc0)                 | Generate the documentation.                                                                                      |
 
 Function Details
 ----------------
@@ -260,7 +261,7 @@ Generate the documentation
 
 ------------------------------------------------------------------------
 
-|-----------------------------------|------------------------------------------------------|
 | [Overview](overview-summary.html) | [![erlang logo](erlang.png)](http://www.erlang.org/) |
+|-----------------------------------|------------------------------------------------------|
 
 *Generated by EDoc, Oct 5 2016, 12:08:19.*
