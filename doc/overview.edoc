@@ -1,0 +1,26 @@
+@author Pascal Chapier <pascalchap@gmail.com>
+@copyright 2016 Pascal Chapier
+@version 0.1.0
+@title Welcome to Single File MiniChat
+
+
+@doc <h2>Build</h2>
+
+Clone the Git repositery, compile the unique file "minichat" in a valid erlang environment. This version was tested with Erlang/OTP 19, but
+it should work with earlier version.
+
+<h2>Structure</h2>
+
+Although the code is in a single file, this chat uses a bunch of processes to work:
+<li> A server, registered as {global,minichat_server}, is used to solve the User addresses (get the user listen loop pid)</li>
+<li> For each user, running on a dedicated node, a main loop is responsible to get the user input, react accordingly, and display some info in the shell panel(at least the prompt :o). The process is called <b>send loop</b> but it is not registered</li>
+<li> For each user as second loop is running, responsible to listen all the messages comming from other users and display them in the shell panel. The process is called <b>listen loop</b>, still not registered</li>
+The following diagram shows all the processes and the different relationship between them in a chat system involving 3 users.
+
+<img src="structure.png" alt="Structure of a running chat involving 3 users" title="Structure of a running chat involving 3 user" />
+
+<h2>Playing with the chat</h2>
+
+Following a screen capture of the minichat in action.
+
+<img src="minichat.png" alt="Screen capture of the chat in action" title="chat with 3 users" />

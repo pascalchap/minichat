@@ -1,0 +1,65 @@
+@startuml
+
+skinparam componentStyle uml2
+skinparam linetype polylines
+
+skinparam titleFontSize 20
+title
+Structure of a running chat
+end title
+frame "Erlang Cluster"{
+node "Server node" {
+	[server process\nregistered as {global,minichat_server}] as sp
+}
+node "User 1 node" {
+	[shell] as s1
+	[listen loop\nprocess] as ll1
+	[send loop\nprocess] as sl1
+}
+node "User 2 node" {
+	[shell] as s2
+	[listen loop\nprocess] as ll2
+	[send loop\nprocess] as sl2
+}
+node "User N node"  as nN {
+	[shell] as sN
+	[listen loop\nprocess] as llN
+	[send loop\nprocess] as slN
+}
+note left of nN
+* 3 user connected
+* User 2 has sent a message to user N
+* User 1 has sent a message to himself
+end note
+}
+
+ll1 -left-> s1
+sl1 -> s1
+s1 -> sl1
+ll1 <..> sl1
+
+ll2 -left-> s2 : display
+sl2 -> s2 : display
+s2 -> sl2 : input
+ll2 <..> sl2 : link
+
+llN -left-> sN
+slN -> sN
+sN -> slN
+llN <..> slN
+
+sl1 -down->> sp
+sp ..> sl1
+
+sl2 -left->> sp : register or\nwhere_is or\nget_state
+sp ..> sl2 : monitor
+
+slN -up->> sp
+sp ..> slN
+
+slN -up-> ll1 : chat message
+sl2 -down-> llN : chat message
+sl1 -left-> ll1 : chat message
+
+
+@enduml
