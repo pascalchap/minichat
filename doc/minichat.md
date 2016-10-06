@@ -1,0 +1,360 @@
+
+
+# Module minichat #
+* [Description](#description)
+* [Data Types](#types)
+* [Function Index](#index)
+* [Function Details](#functions)
+
+A simple, one file chat system working on an Erlang cluster.
+
+<a name="types"></a>
+
+## Data Types ##
+
+
+
+
+### <a name="type-connected_user_list">connected_user_list()</a> ###
+
+
+<pre><code>
+connected_user_list() = [{string(), pid()}]
+</code></pre>
+
+
+
+
+### <a name="type-user">user()</a> ###
+
+
+<pre><code>
+user() = #user{name = string(), pid = pid(), monitor = reference()}
+</code></pre>
+
+<a name="index"></a>
+
+## Function Index ##
+
+
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#start_server-0">start_server/0</a></td><td>Start the "name server".</td></tr><tr><td valign="top"><a href="#register_me-2">register_me/2</a></td><td>Register a user and its listen loop pid.</td></tr><tr><td valign="top"><a href="#where_is-1">where_is/1</a></td><td>Find the user listen loop pid of a given user name.</td></tr><tr><td valign="top"><a href="#get_state-0">get_state/0</a></td><td>Get the user record list from the server.</td></tr><tr><td valign="top"><a href="#stop_server-0">stop_server/0</a></td><td>Stop the server.</td></tr><tr><td valign="top"><a href="#server_init-0">server_init/0</a></td><td>Server initialization.</td></tr><tr><td valign="top"><a href="#server_loop-1">server_loop/1*</a></td><td><em>Private</em> Server loop.</td></tr><tr><td valign="top"><a href="#do_register-4">do_register/4*</a></td><td><em>Private</em> Function to register a new user.</td></tr><tr><td valign="top"><a href="#unregister-2">unregister/2*</a></td><td><em>Private</em> Function to un-register a user whose process died.</td></tr><tr><td valign="top"><a href="#search-3">search/3*</a></td><td><em>Private</em> Get the user listen loop pid given his name.</td></tr><tr><td valign="top"><a href="#start_user-1">start_user/1</a></td><td>Start the user process with a default server node.</td></tr><tr><td valign="top"><a href="#start_user-2">start_user/2</a></td><td>Start the user process with given server node.</td></tr><tr><td valign="top"><a href="#user_init-1">user_init/1</a></td><td>Initialize the user processes.</td></tr><tr><td valign="top"><a href="#listen_loop-0">listen_loop/0</a></td><td>Listen loop.</td></tr><tr><td valign="top"><a href="#send_loop-3">send_loop/3*</a></td><td><em>Private</em> Send loop.</td></tr><tr><td valign="top"><a href="#send_message-3">send_message/3*</a></td><td><em>Private</em> First step of the send message operation responsible to extract the Recipent name from the user input.</td></tr><tr><td valign="top"><a href="#send_message-4">send_message/4*</a></td><td><em>Private</em> Second step of the send message operation responsible to retreive the Recipient listen loop.</td></tr><tr><td valign="top"><a href="#do_send-4">do_send/4*</a></td><td><em>Private</em> Last step of the send message operation responsible to send the message.</td></tr><tr><td valign="top"><a href="#split-1">split/1*</a></td><td><em>Private</em> Extract the Recipient name from a string.</td></tr><tr><td valign="top"><a href="#show_people-1">show_people/1*</a></td><td><em>Private</em> Request the list of the registered users.</td></tr><tr><td valign="top"><a href="#gendoc-0">gendoc/0</a></td><td>Generate the documentation.</td></tr></table>
+
+
+<a name="functions"></a>
+
+## Function Details ##
+
+<a name="start_server-0"></a>
+
+### start_server/0 ###
+
+<pre><code>
+start_server() -&gt; pid()
+</code></pre>
+<br />
+
+Start the "name server".
+This function must be executed prior to any other one on the server node.
+It is in charge of keeping a list of all the connected users.
+Each user info is stored in a record containing its name, the pid of the user listen loop
+and a monitor reference used to manage the death or deconnection of the users.
+
+<a name="register_me-2"></a>
+
+### register_me/2 ###
+
+<pre><code>
+register_me(Name::string() | atom(), Pid::pid()) -&gt; ok | {error, already_exist}
+</code></pre>
+<br />
+
+Register a user and its listen loop pid. 
+This function is an interface provided to the user in order to register its name and the pid of its listen loop. 
+Doing so, he allows other users to get its liten loop pid which will be used later for communication. 
+The Name must be unique.
+
+_Note the this function, as all other server interfaces, uses global:send/2 to send messages to the server rthar than the operator !.It is because the server is registered "globally" in order to "find" it easily from any node of the cluster. On the other hand, inthe rest of the code, we can use the operator ! since we know the pid of the processes we want to reach._
+
+<a name="where_is-1"></a>
+
+### where_is/1 ###
+
+<pre><code>
+where_is(Name::string()) -&gt; {ok, pid()} | {error, not_registered}
+</code></pre>
+<br />
+
+Find the user listen loop pid of a given user name.
+This function is an interface provided to the user in order to retreive the listen loop pid of a given user.
+
+<a name="get_state-0"></a>
+
+### get_state/0 ###
+
+<pre><code>
+get_state() -&gt; [<a href="#type-user">user()</a>]
+</code></pre>
+<br />
+
+Get the user record list from the server.
+This function is an interface provided to the user to get the list of all connected users.
+
+<a name="stop_server-0"></a>
+
+### stop_server/0 ###
+
+<pre><code>
+stop_server() -&gt; pid()
+</code></pre>
+<br />
+
+Stop the server.
+
+<a name="server_init-0"></a>
+
+### server_init/0 ###
+
+<pre><code>
+server_init() -&gt; ok
+</code></pre>
+<br />
+
+Server initialization. 
+This fuction is exported to allow the usage of spwan/3 to start the server process. 
+It register the server with the name 'minichat_server' using the global module. 
+Thus the registration is available for all the nodes of the cluster.
+
+Then it calls the server_loop with an empty list of users as initial state.
+
+<a name="server_loop-1"></a>
+
+### server_loop/1 * ###
+
+<pre><code>
+server_loop(Users::[<a href="#type-user">user()</a>]) -&gt; ok
+</code></pre>
+<br />
+
+_Private_ Server loop.
+This function is in charge to manage the incomming messages to the server.
+It maintains a list of user records who are connected to the chat system.
+It add the new users, monitor their processes and remove them from the list when the user process dies.
+It ignores any unexpected (badly formatted) message.
+
+<a name="do_register-4"></a>
+
+### do_register/4 * ###
+
+<pre><code>
+do_register(Users::[<a href="#type-user">user()</a>], Name::string(), Pid::pid(), From::pid()) -&gt; ok | {error, already_exist}
+</code></pre>
+<br />
+
+_Private_ Function to register a new user.
+Check if the Name of the registering user is not already in use,
+
+<li> if not, start to monitor the user process (send loop) and add the user record to the existing list and send back the message ok.</li>
+
+
+<li> if yes send back an error message.</li>
+
+Note that the pid used for the communication is the is the user send loop, the one which is waiting for an answer,
+while the pid stored in the user record is the listen loop's one which will used by other users to send messages.
+
+<a name="unregister-2"></a>
+
+### unregister/2 * ###
+
+<pre><code>
+unregister(MonitorRef::reference(), Users::[<a href="#type-user">user()</a>]) -&gt; [<a href="#type-user">user()</a>]
+</code></pre>
+<br />
+
+_Private_ Function to un-register a user whose process died.
+
+<a name="search-3"></a>
+
+### search/3 * ###
+
+<pre><code>
+search(Users::[<a href="#type-user">user()</a>], Name::string(), From::pid()) -&gt; {ok, pid()} | {error, not_registered}
+</code></pre>
+<br />
+
+_Private_ Get the user listen loop pid given his name.
+
+<a name="start_user-1"></a>
+
+### start_user/1 ###
+
+<pre><code>
+start_user(Name::string()) -&gt; pid()
+</code></pre>
+<br />
+
+Start the user process with a default server node.
+The node server is defined as 'server@127.0.0.1'. Convenient to make the test without getting annoyed by the firewall configuration.
+
+<a name="start_user-2"></a>
+
+### start_user/2 ###
+
+<pre><code>
+start_user(Name::string(), ServerNode::atom()) -&gt; pid()
+</code></pre>
+<br />
+
+Start the user process with given server node.
+the function connects the local node to the server node and waits for the node synchronization before spawning the user process.
+It is important since the first job that the user process will perform is to register itself to the server.
+
+<a name="user_init-1"></a>
+
+### user_init/1 ###
+
+<pre><code>
+user_init(Name::string()) -&gt; ok | {error, already_exist}
+</code></pre>
+<br />
+
+Initialize the user processes.
+First, it starts the listen loop, an then it registers itself to the server.
+
+<li> if it works, call the send loop. At this point the user is made of 2 processes linked together : the send and the listen loops. If any
+of them dies, the other will die also. When the user closes its process (normal termination) the code must take care to ends both processes.</li>
+
+
+<li> if it fails, stop the listen loop and return an error message.</li>
+
+<a name="listen_loop-0"></a>
+
+### listen_loop/0 ###
+
+<pre><code>
+listen_loop() -&gt; ok
+</code></pre>
+<br />
+
+Listen loop.
+A simple receive bloc listening any message.
+
+<li> If it is a well formed message from another user, it prints to the shell the date an time, the emitter name and then the message text.
+Then it aknowledges the message</li>
+
+
+<li> If it is the stop message, it ends the loop.</li>
+
+
+<li> It ignores all other messages, simply removing them from the mailbox.</li>
+
+The listening activity run in a separate process, so it is always available to display incoming messages, independently of the writting activity
+of the user. Nevertheless both processes share the shell panel to display their results, The basic test I made worked correctly, even if an incomming
+message is displayed while the user is writting.
+
+<a name="send_loop-3"></a>
+
+### send_loop/3 * ###
+
+<pre><code>
+send_loop(Name::string(), Me::pid(), Connected::<a href="#type-connected_user_list">connected_user_list()</a>) -&gt; ok
+</code></pre>
+<br />
+
+_Private_ Send loop.
+The main user process is in charge to get the input from the user , analyze it and make an action accordingly. 3 messages are supported, the other ones are ignored:
+
+<li> "bye" : leave the chat</li>
+
+
+<li> "who" : get a list of the reachable users</li>
+
+
+<li> "Recipient : Text" : to send the message "Text" to the user "Recipient" Recipient is any string that do not contain a : character. So a user who have chosen the name
+"Smart:Joe" is not reachable while "Smart Joe" is correct.</li>
+
+The sending loop stores 3 information:
+
+<li> Name : The user name is used to tag the messages so the recipent will know who wrote each of the received messages.</li>
+
+
+<li> Me : the pid of the listen loop, in order to stop it whe the user leaves the chat. As far as the listen loop is linked to the send loop, it was also possible to
+exit the prcess using a reason different than normal, but I don't like to use error mechanism for a normal behavior.</li>
+
+
+<li> Connected : a list of pair {Name,Pid} to avoid permanent accesses to the server to solve the Recipient address. A consequence is that if one user is disconnected
+for a while, the first message won't be delivered (The system don't propagate the user disparition).</li>
+
+Sending the message needs some steps, the execution is delegate to the helper function send message who is in charge to send the message if possible and update the pair
+list of [user,pid].
+
+<a name="send_message-3"></a>
+
+### send_message/3 * ###
+
+<pre><code>
+send_message(Message::string(), Sender::string(), Connected::<a href="#type-connected_user_list">connected_user_list()</a>) -&gt; <a href="#type-connected_user_list">connected_user_list()</a>
+</code></pre>
+<br />
+
+_Private_ First step of the send message operation responsible to extract the Recipent name from the user input.
+
+<a name="send_message-4"></a>
+
+### send_message/4 * ###
+
+<pre><code>
+send_message(Recipient::string(), Text::string(), Sender::string(), Connected::<a href="#type-connected_user_list">connected_user_list()</a>) -&gt; <a href="#type-connected_user_list">connected_user_list()</a>
+</code></pre>
+<br />
+
+_Private_ Second step of the send message operation responsible to retreive the Recipient listen loop.
+If the Recipent is not connected yet to this user, it requests its pid to the server and adds it to the connected list
+
+<a name="do_send-4"></a>
+
+### do_send/4 * ###
+
+<pre><code>
+do_send(To::pid(), Text::string(), Sender::string(), Connected::<a href="#type-connected_user_list">connected_user_list()</a>) -&gt; <a href="#type-connected_user_list">connected_user_list()</a>
+</code></pre>
+<br />
+
+_Private_ Last step of the send message operation responsible to send the message.
+If the message is not acknowledged within 2 seconds, it removes the recipein from the connected user list.
+
+<a name="split-1"></a>
+
+### split/1 * ###
+
+<pre><code>
+split(Message::string()) -&gt; {string(), string()} | {error, string()}
+</code></pre>
+<br />
+
+_Private_ Extract the Recipient name from a string.
+It first splits the string into pieces using the charater : as separator. Then it constructs a tuple made of the first token (without leading and trailing blanks)
+and the rest of the input string (if there were multiple : charaters, the message is rebuilt).
+
+<a name="show_people-1"></a>
+
+### show_people/1 * ###
+
+<pre><code>
+show_people(Connected::<a href="#type-connected_user_list">connected_user_list()</a>) -&gt; ok
+</code></pre>
+<br />
+
+_Private_ Request the list of the registered users.
+When the list is received, the function extract all the names and check if they are in the connected list and print the information accordingly.
+
+<a name="gendoc-0"></a>
+
+### gendoc/0 ###
+
+<pre><code>
+gendoc() -&gt; ok
+</code></pre>
+<br />
+
+Generate the documentation
+

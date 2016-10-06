@@ -29,18 +29,18 @@ Although the code is in a single file, this chat uses a bunch of processes to wo
 
 The following diagram shows all the processes and the different relationship between them in a chat system involving 3 users.
 
-![Structure of a running chat involving 3 users](doc/structure.png)
+![Structure of a running chat involving 3 users](structure.png)
 
 
 ## Playing with the chat ##
 
 Following a screen capture of the minichat in action.
 
-![Screen capture of the chat in action](doc/minichat.png)
+![Screen capture of the chat in action](minichat.png)
 
 ## Modules ##
 
 
 <table width="100%" border="0" summary="list of modules">
-<tr><td><a href="doc/minichat.md" class="module">minichat</a></td></tr></table>
+<tr><td><a href="minichat.md" class="module">minichat</a></td></tr></table>
 
