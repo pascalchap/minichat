@@ -42,5 +42,5 @@ Following a screen capture of the minichat in action.
 
 
 <table width="100%" border="0" summary="list of modules">
-<tr><td><a href="doc/minichat.md" class="module">minichat</a></td></tr></table>
+<tr><td><a href="http://github.com/pascalchap/minichat/blob/master/doc/minichat.md" class="module">minichat</a></td></tr></table>
 

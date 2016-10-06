@@ -315,5 +315,7 @@ show_people(Connected) ->
 % @doc Generate the documentation
 -spec gendoc() -> ok.
 gendoc() ->
-	edoc:run(["src/minichat.erl"],[{dir,"doc"},{private, true},{sort_functions,false}]).
+	% edoc:run(["src/minichat.erl"],[{dir,"doc"},{private, true},{sort_functions,false}]).
+	code:add_path("C:/git/edown/_build/default/lib/edown/ebin"),
+	edoc:run(["src/minichat.erl"],[{dir,"doc"},{private, true},{sort_functions,false},{doclet, edown_doclet},{top_level_readme, {"readme.md", "http://github.com/pascalchap/minichat", "master"}}]).
 
