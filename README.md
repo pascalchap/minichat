@@ -36,7 +36,7 @@ The following diagram shows all the processes and the different relationship bet
 
 Following a screen capture of the minichat in action.
 
-![Screen capture of the chat in action](doc/minichat.png)
+![Screen capture of the chat in action](http://github.com/pascalchap/minichat/blob/master/doc/minichat.png)
 
 ## Modules ##
 
